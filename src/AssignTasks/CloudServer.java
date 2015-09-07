@@ -10,7 +10,7 @@ public class CloudServer {
 	public CloudServer(double f){
 		this.f=f;		
 	}
-	
+
 	/**
 	 * 服务器计算证据时间
 	 * @param x 校验的块数
@@ -19,7 +19,7 @@ public class CloudServer {
 	public  double proofTime(int x){
 		return DataFilter.roundDouble(BaseParams.f0*BaseParams.baseCSTime(x)/f,3);
 	}
-	
+
 	/**
 	 * 给定时间内可校验最大块数
 	 * @param time	 
@@ -29,18 +29,15 @@ public class CloudServer {
 	{
 		return BaseParams.verBlocks(time,f);	
 	}
-	
+
 	/**
-	 * 计算服务器的能量消耗——t*k*(f^a)
+	 * 云服务器的计算能量消耗
 	 * @param Tcsp
 	 * @return
 	 */
 	public double CSPEnergy(double Tcsp){
+		// t*k*(f^a)
 		return Tcsp*k*Math.pow(f, a);
-	}
-
-	public double energyCost(double t,double f){
-		return t*k*Math.pow(f, a);
 	}
 
 }

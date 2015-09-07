@@ -8,6 +8,7 @@ public class VerificationRequest {
 	public double P;
 	
 	public VerificationRequest(){}
+	
 	public VerificationRequest(int M, int n, int T, double P){
 		this.M=M;
 		this.n=n;

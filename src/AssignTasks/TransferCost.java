@@ -25,7 +25,7 @@ public class TransferCost {
 	public static double challengeCost(int c,int p){		
 		return (c+2)*p;
 	}
-	
+
 	/**
 	 * 证据的传输消耗——（DP，TP，RanMul，{idi})
 	 * @param c		挑战的块数
@@ -102,6 +102,6 @@ public class TransferCost {
 	}
 	
 	public static void main(String []args){
-		
+
 	}
 }

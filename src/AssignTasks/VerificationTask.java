@@ -6,6 +6,7 @@ public class VerificationTask {
 	public double t; //完成时间
 	
 	public VerificationTask(){}
+	
 	public VerificationTask(int bs, int c,int t){
 		this.bs=bs;
 		this.c=c;
