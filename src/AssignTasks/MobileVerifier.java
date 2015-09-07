@@ -9,7 +9,7 @@ public class MobileVerifier {
 	public double PsRF;// 静态传输功率
 	public double PdRF;// 动态增加传输功率
 	public int w; // 存活时间
-	public double st; // 校验者提供的校验服务时间
+	//public double st; // 校验者提供的校验服务时间
 	public int c; // 分给校验者的校验任务（块数）
 	// public VerificationTask verTask;//分给校验者的校验任务
 
