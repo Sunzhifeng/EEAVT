@@ -19,7 +19,7 @@ public class AssignTask {
 	public static final int PRIME = BaseParams.SECUBIT;
 	public int S = BaseParams.S;
 	public int M = BaseParams.M; // 文件大小，G
-	public int n = BaseParams.n;
+	public int n = (int) (BaseParams.n * BaseParams.pr);
 	public double pr = BaseParams.pr; // 探测率
 	public int bs = BaseParams.bs;// 数据块大小
 	public int T = 10; // 用户期望完成时间
@@ -90,13 +90,20 @@ public class AssignTask {
 	 * @param VR
 	 */
 	public void singleAsign(MobileVerifier[] verifiers, VerificationRequest VR) {
-		int n = (int) (VR.n * VR.P);
 		verifiers[0].c = n;
 		verifiers[verifiers.length - 1].c = n;
 
 	}
 
-	// 能耗
+	/**
+	 * 不同校验任务分配算法下的能耗（校验者和服务器）
+	 * 
+	 * @param verifiers
+	 * @param servers
+	 * @param VR
+	 * @param assignAlg
+	 * @return 校验者和服务器能量消耗Map
+	 */
 	public Map<String, String> energyCost(MobileVerifier[] verifiers, CloudServer[] servers, VerificationRequest VR,
 			int assignAlg) {
 		Map<String, String> result = new HashMap<>();
@@ -106,34 +113,75 @@ public class AssignTask {
 				if (i == 0) { // 计算最低能耗
 					int c = verifiers[0].c;
 					double TdCPU = verifiers[0].verTime(c);
-					double TdRF = TransferCost.transTime(c, VR.n, PRIME);
+					double TdRF = TransferCost.transTime(c, n, PRIME);
 					double Tproof = servers[0].proofTime(c);
-					double minE = verifiers[0].verEnergy(TdCPU + TdRF + Tproof, TdCPU, TdRF);
-					result.put("minE", String.valueOf(minE));
+					double minVerEnergy = verifiers[0].verEnergy(TdCPU + TdRF + Tproof, TdCPU, TdRF);
+					double minServerEnergy = servers[0].CSPEnergy(Tproof);
+					result.put("minVerEnergy", String.valueOf(minVerEnergy));
+					result.put("minServerEnergy", String.valueOf(minServerEnergy));
 				} else { // 计算最大能耗
 					int j = verifiers.length - 1;
 					int c = verifiers[j].c;
 					double TdCPU = verifiers[j].verTime(c);
-					double TdRF = TransferCost.transTime(c, VR.n, PRIME);
+					double TdRF = TransferCost.transTime(c, n, PRIME);
 					double Tproof = servers[servers.length - 1].proofTime(c);
-					double maxE = verifiers[j].verEnergy(TdCPU + TdRF + Tproof, TdCPU, TdRF);
-					result.put("maxE", String.valueOf(maxE));
+					double maxVerEnergy = verifiers[j].verEnergy(TdCPU + TdRF + Tproof, TdCPU, TdRF);
+					double maxServerEnergy = servers[0].CSPEnergy(Tproof);
+					result.put("maxVerEnergy", String.valueOf(maxVerEnergy));
+					result.put("maxServerEnergy", String.valueOf(maxServerEnergy));
 				}
 			}
 		} else if (assignAlg == RRAVT) {// RRAVT 的能量消耗
 			this.RandomRatioAssign(verifiers, VR);
+			// double totalEnergy=0.0;
+			double verEnergy = 0.0;
+			double serverEnergy = 0.0;
+			for (int i = 0; i < S; i++) {
+				int c = verifiers[i].c;
+				if (c == 0)
+					break;
+				double TdCPU = verifiers[i].verTime(c);
+				double TdRF = TransferCost.transTime(c, VR.n, PRIME);
+				// Cloud Server 以最低的响应等级 Server0
+				double Tproof = servers[0].proofTime(c);
+				verEnergy += verifiers[i].verEnergy(TdCPU + TdRF + Tproof, TdCPU, TdRF);
+				serverEnergy += servers[0].CSPEnergy(Tproof);
+			}
+			result.put("verEnergy", String.valueOf(verEnergy));
+			result.put("serverEnergy", String.valueOf(serverEnergy));
 		} else if (assignAlg == EEAVT) {// EEAVT 的能量消耗
 			this.EnergyEfficientAssign(verifiers, VR);
+			double verEnergy = 0.0;
+			double serverEnergy = 0.0;
+			for (int i = 0; i < S; i++) {
+				int c = verifiers[i].c;
+				if (c == 0)
+					continue;
+				double TdCPU = verifiers[i].verTime(c);
+				double TdRF = TransferCost.transTime(c, VR.n, PRIME);
+				// Cloud Server 以最低的响应等级 Server0
+				double Tproof = servers[0].proofTime(c);
+				verEnergy += verifiers[i].verEnergy(TdCPU + TdRF + Tproof, TdCPU, TdRF);
+				serverEnergy += servers[0].CSPEnergy(Tproof);
+			}
+			result.put("verEnergy", String.valueOf(verEnergy));
+			result.put("serverEnergy", String.valueOf(serverEnergy));
 		}
-
 		return result;
 	}
 
-	// 校验时间
+	/**
+	 * 校验最少时间——体现了校验能力，为了满足用户弹性校验需求
+	 * @param verifiers
+	 * @param servers
+	 * @param VR
+	 * @param assignAlg
+	 * @return	给定任务的最小完成时间
+	 */
 	public Map<String, String> timeCost(MobileVerifier[] verifiers, CloudServer[] servers, VerificationRequest VR,
 			int assignAlg) {
 		Map<String, String> result = new HashMap<>();
-		if (assignAlg == SAVT) {// SAVT 的计算时间
+		if (assignAlg == SAVT) {// SAVT 的计算时间，当然这里假定单校验者有足够的存活时间
 			singleAsign(verifiers, VR);
 			for (int i = 0; i < 2; i++) {
 				if (i == 0) {// 计算最大完成时间
@@ -153,15 +201,50 @@ public class AssignTask {
 					result.put("mint", String.valueOf(mint));
 				}
 			}
-		} else if (assignAlg == RRAVT) {// RRAVT 的计算时间
+		} else if (assignAlg == RRAVT) {// RRAVT的计算时间
 			this.RandomRatioAssign(verifiers, VR);
+			double t = minTimeCost(verifiers, servers);
+			result.put("t", String.valueOf(t));
 		} else if (assignAlg == EEAVT) {// EEAVT 的计算时间
 			this.EnergyEfficientAssign(verifiers, VR);
+			double t = minTimeCost(verifiers, servers);
+			result.put("t", String.valueOf(t));
 		}
 		return result;
 	}
 
-	// 任务量
+	// 多校验者对给定校验任务量的最小完成时间——不考虑用户期望完成时间的限制
+	// 主要比对单校验者和多校验者对弹性校验需求的影响。
+	private double minTimeCost(MobileVerifier[] verifiers, CloudServer[] servers) {
+		int remain = n;
+		for (int i = S - 1; i >= 0; i--) {
+			int assigni = verifiers[i].verBlocks(verifiers[i].w);
+			if (remain <= 0)
+				break;
+			verifiers[i].c = (remain - assigni > 0 ? assigni : remain);
+			remain -= assigni;
+		}
+		double t = 0;
+		for (int j = 0; j < S; j++) {
+			int c = verifiers[j].c;
+			double TdCPU = verifiers[j].verTime(c);
+			double TdRF = TransferCost.transTime(c, n, PRIME);
+			double Tproof = servers[0].proofTime(c);
+			double ti = TdCPU + TdRF + Tproof;
+			if (ti > t)
+				t = ti;
+		}
+		return t;
+	}
+
+	
+	/**
+	 * 每个校验者的任务量
+	 * @param verifiers
+	 * @param VR
+	 * @param assignAlg
+	 * @return
+	 */
 	public List<Integer> taskAssign(MobileVerifier[] verifiers, VerificationRequest VR, int assignAlg) {
 		List<Integer> result = new ArrayList<>();
 		if (assignAlg == SAVT) { // SAVT 的校验者任务分配量
