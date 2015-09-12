@@ -96,11 +96,11 @@ public class TransferCost {
 		double result=(c*(q*p+q+p)+s*p)/K;
 		return DataFilter.roundDouble(result,2);
 	}
-
+	//´«ÊäÏûºÄ£ºº¯Êıtran=ax+b
 	public static double transTime(int x,int n,int p){
 		return DataFilter.roundDouble(TransferCost.IHTPADDTransCost(x, n, p)/B, 3);
 	}
-	
+		
 	public static void main(String []args){
 
 	}

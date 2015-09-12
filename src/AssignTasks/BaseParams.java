@@ -25,6 +25,10 @@ public class BaseParams {
 	public static double f0 = 3.2; // 云服务器基准CPU工作频率
 	public static double a2 = 0.0066;
 	public static double b2 = 4.634;
+	
+	// 传输消耗的基本参数ttran(x)=ax+b
+	public static double a3 = 0.0066;
+	public static double b3 = 4.634;
 
 	// 实验中可变参数设置
 	public static double[] PsCPUi = { 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3 };
@@ -66,7 +70,15 @@ public class BaseParams {
 	 * @return 校验证据包含的最大块数
 	 */
 	public static int verBlocks(double t, double fi) {
-		return (int) (t * (fi / (a * f0)) - b / a);
+		return (int) (t * (fi / (a2 * f0)) - b2 / a2);
+	}
+	
+	public static int verBlocks (double t,double fi,double PsCPUi,double PdCPUi){
+		//f0*tver(x)/fi+(Ps0CPU+Pd0CPU)*tcsp(x)/(PsiCPU+PdiCPU)+ttran(x)
+		double f=f0/fi;
+		double p= (Ps0CPU+Pd0CPU)/(PsCPUi+PdCPUi);
+		return (int)((t-(f*b+p*b2+b3))/(f*a+p*a2+a3));
+		
 	}
 
 }

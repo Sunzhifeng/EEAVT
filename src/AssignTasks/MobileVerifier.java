@@ -42,10 +42,12 @@ public class MobileVerifier {
 	 * 给定时间内可校验的块数
 	 * 
 	 * @param time
+	 * @param fi  计算证据的云服务器工作频率
 	 * @return
 	 */
-	public int verBlocks(double t) {
-		return 0;
+	public int verBlocks(double t,double fi) {
+		//f0*tver(x)/fi+(Ps0CPU+Pd0CPU)*tcsp(x)/(PsiCPU+PdiCPU)+ttran(x)
+		return BaseParams.verBlocks(t, fi, PsCPU, PdCPU);
 	}
 
 	/**

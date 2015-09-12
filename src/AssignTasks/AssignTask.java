@@ -46,7 +46,7 @@ public class AssignTask {
 	 *            频率权重
 	 * @return 分配给校验者的的数据块集合
 	 */
-	public void RandomRatioAssign(MobileVerifier[] verifiers, VerificationRequest VR) {
+	public void RandomRatioAssign(MobileVerifier[] verifiers, CloudServer[] servers, VerificationRequest VR) {
 		int n = (int) (VR.n * VR.P);
 		double sumW = 0.0;
 		for (int i = 0; i < S; i++) {
@@ -56,7 +56,7 @@ public class AssignTask {
 		}
 		// ni=min[nwi'/sum(wi'),gi(wi')]
 		for (int i = 0; i < S; i++) {
-			int assign1 = verifiers[i].verBlocks(verifiers[i].w);
+			int assign1 = verifiers[i].verBlocks(verifiers[i].w, servers[1].f);
 			int assign2 = (int) (n * verifiers[i].w / sumW);
 			verifiers[i].c = (assign1 > assign2 ? assign2 : assign1);
 		}
@@ -70,12 +70,12 @@ public class AssignTask {
 	 * @param VR
 	 *            校验需求
 	 */
-	public void EnergyEfficientAssign(MobileVerifier[] verifiers, VerificationRequest VR) {
+	public void EnergyEfficientAssign(MobileVerifier[] verifiers, CloudServer[] servers, VerificationRequest VR) {
 		int n = (int) (VR.n * VR.P);
 		int remain = n;
 		for (int i = 0; i < S; i++) {
 			double t = (verifiers[i].w < VR.T ? verifiers[i].w : VR.T);
-			int assigni = verifiers[i].verBlocks(t);
+			int assigni = verifiers[i].verBlocks(t, servers[1].f);
 			if (remain <= 0)
 				break;
 			verifiers[i].c = (remain - assigni > 0 ? assigni : remain);
@@ -132,7 +132,7 @@ public class AssignTask {
 				}
 			}
 		} else if (assignAlg == RRAVT) {// RRAVT 的能量消耗
-			this.RandomRatioAssign(verifiers, VR);
+			this.RandomRatioAssign(verifiers, servers, VR);
 			// double totalEnergy=0.0;
 			double verEnergy = 0.0;
 			double serverEnergy = 0.0;
@@ -150,7 +150,7 @@ public class AssignTask {
 			result.put("verEnergy", String.valueOf(verEnergy));
 			result.put("serverEnergy", String.valueOf(serverEnergy));
 		} else if (assignAlg == EEAVT) {// EEAVT 的能量消耗
-			this.EnergyEfficientAssign(verifiers, VR);
+			this.EnergyEfficientAssign(verifiers, servers, VR);
 			double verEnergy = 0.0;
 			double serverEnergy = 0.0;
 			for (int i = 0; i < S; i++) {
@@ -172,11 +172,12 @@ public class AssignTask {
 
 	/**
 	 * 校验最少时间——体现了校验能力，为了满足用户弹性校验需求
+	 * 
 	 * @param verifiers
 	 * @param servers
 	 * @param VR
 	 * @param assignAlg
-	 * @return	给定任务的最小完成时间
+	 * @return 给定任务的最小完成时间
 	 */
 	public Map<String, String> timeCost(MobileVerifier[] verifiers, CloudServer[] servers, VerificationRequest VR,
 			int assignAlg) {
@@ -202,11 +203,11 @@ public class AssignTask {
 				}
 			}
 		} else if (assignAlg == RRAVT) {// RRAVT的计算时间
-			this.RandomRatioAssign(verifiers, VR);
+			this.RandomRatioAssign(verifiers, servers, VR);
 			double t = minTimeCost(verifiers, servers);
 			result.put("t", String.valueOf(t));
 		} else if (assignAlg == EEAVT) {// EEAVT 的计算时间
-			this.EnergyEfficientAssign(verifiers, VR);
+			this.EnergyEfficientAssign(verifiers, servers, VR);
 			double t = minTimeCost(verifiers, servers);
 			result.put("t", String.valueOf(t));
 		}
@@ -218,7 +219,7 @@ public class AssignTask {
 	private double minTimeCost(MobileVerifier[] verifiers, CloudServer[] servers) {
 		int remain = n;
 		for (int i = S - 1; i >= 0; i--) {
-			int assigni = verifiers[i].verBlocks(verifiers[i].w);
+			int assigni = verifiers[i].verBlocks(verifiers[i].w, servers[1].f);
 			if (remain <= 0)
 				break;
 			verifiers[i].c = (remain - assigni > 0 ? assigni : remain);
@@ -237,25 +238,26 @@ public class AssignTask {
 		return t;
 	}
 
-	
 	/**
 	 * 每个校验者的任务量
+	 * 
 	 * @param verifiers
 	 * @param VR
 	 * @param assignAlg
 	 * @return
 	 */
-	public List<Integer> taskAssign(MobileVerifier[] verifiers, VerificationRequest VR, int assignAlg) {
+	public List<Integer> taskAssign(MobileVerifier[] verifiers, CloudServer[] servers, VerificationRequest VR,
+			int assignAlg) {
 		List<Integer> result = new ArrayList<>();
 		if (assignAlg == SAVT) { // SAVT 的校验者任务分配量
 			singleAsign(verifiers, VR);
 			result.add(verifiers[0].c);
 		} else if (assignAlg == RRAVT) { // RRAVT 的校验者任务分配量
-			RandomRatioAssign(verifiers, VR);
+			RandomRatioAssign(verifiers, servers, VR);
 			for (int i = 0; i < verifiers.length; i++)
 				result.add(verifiers[i].c);
 		} else if (assignAlg == EEAVT) { // EEAVT 的校验者任务分配量
-			EnergyEfficientAssign(verifiers, VR);
+			EnergyEfficientAssign(verifiers, servers, VR);
 			for (int i = 0; i < verifiers.length; i++)
 				result.add(verifiers[i].c);
 		}
