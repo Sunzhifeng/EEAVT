@@ -1,5 +1,9 @@
 package tool;
-
+/**
+ * 对double类型数据进行四舍五入取精度.
+ * @author ezhifsu
+ *
+ */
 public class DataFilter {
 	//四舍五入保留precision位小数
 		public static Double roundDouble(double val, int precision) {  

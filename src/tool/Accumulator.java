@@ -1,15 +1,10 @@
 package tool;
-
-
-
 /*************************************************************************
  *  Compilation:  javac Accumulator.java
  *
  *  Mutable data type that calculates mean of data values.
  *
  *************************************************************************/
-
-
 public class Accumulator {
     private double total;
     private int N;
