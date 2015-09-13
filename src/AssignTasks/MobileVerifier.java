@@ -8,10 +8,11 @@ public class MobileVerifier {
 	public double PdCPU;// 动态增加的计算功率
 	public double PsRF;// 静态传输功率
 	public double PdRF;// 动态增加传输功率
-	public int w; // 存活时间
-	//public double st; // 校验者提供的校验服务时间
-	public int c; // 分给校验者的校验任务（块数）
-	// public VerificationTask verTask;//分给校验者的校验任务
+	public int w; // 可提供校验服务时间（存活时间）
+	public VerificationTask VT=new VerificationTask(0,0);// 分给校验者的校验任务
+
+	// public double st; // 校验者已提供的校验服务时间
+	// public int c=0; // 分给校验者的校验任务（块数）
 
 	// min constructor
 	public MobileVerifier() {
@@ -24,6 +25,10 @@ public class MobileVerifier {
 		this.PsRF = PsRF;
 		this.PdRF = PdRF;
 		this.w = w;
+	}
+
+	public void receiveTask(VerificationTask VT) {
+		this.VT = VT;
 	}
 
 	/**
@@ -42,11 +47,12 @@ public class MobileVerifier {
 	 * 给定时间内可校验的块数
 	 * 
 	 * @param time
-	 * @param fi  计算证据的云服务器工作频率
+	 * @param fi
+	 *            计算证据的云服务器工作频率
 	 * @return
 	 */
-	public int verBlocks(double t,double fi) {
-		//f0*tver(x)/fi+(Ps0CPU+Pd0CPU)*tcsp(x)/(PsiCPU+PdiCPU)+ttran(x)
+	public int verBlocks(double t, double fi) {
+		// f0*tver(x)/fi+(Ps0CPU+Pd0CPU)*tcsp(x)/(PsiCPU+PdiCPU)+ttran(x)
 		return BaseParams.verBlocks(t, fi, PsCPU, PdCPU);
 	}
 
@@ -66,13 +72,16 @@ public class MobileVerifier {
 	}
 
 	// 计算能耗
-	private double verComputeEnergy(double t, double t2) {
-		return PsCPU * t + PdCPU * t2;
+	private double verComputeEnergy(double t, double TdCPU) {
+		return PsCPU * t + PdCPU * TdCPU;
 	}
 
 	// 传输能耗
-	private double verTransEnergy(double t, double t2) {
-		return PsRF * t + PdRF * t2;
+	private double verTransEnergy(double t, double TdRF) {
+		return PsRF * t + PdRF * TdRF;
 	}
 
+	public double dComputeEnergy(double t) {
+		return (PsCPU + PdCPU) * t;
+	}
 }

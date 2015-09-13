@@ -43,5 +43,10 @@ public class CloudServer {
 		// t*k*(f^a)
 		return Tcsp * k * Math.pow(f, a);
 	}
+	
+	//服务器的相应等级————对指定用户的校验需求而言
+	public int responseLevel(VerificationRequest VR){
+		return (int)Math.ceil(proofTime(VR.blocks())/(Math.log(VR.n)*VR.P));
+	}
 
 }

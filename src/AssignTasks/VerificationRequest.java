@@ -16,4 +16,8 @@ public class VerificationRequest {
 		this.T = T;
 		this.P = P;
 	}
+	
+	public int blocks(){
+		return (int)(n*P);
+	}
 }
