@@ -1,6 +1,6 @@
-package AssignTasks;
+package tool;
 
-import tool.DataFilter;
+import assignTask.BaseParams;
 
 public class TransferCost {
 	public static final int K = 1024;

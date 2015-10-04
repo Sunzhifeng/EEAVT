@@ -1,4 +1,4 @@
-package AssignTasks;
+package assignTask;
 
 
 public class VerificationTask implements Cloneable{
@@ -22,7 +22,7 @@ public class VerificationTask implements Cloneable{
 
 	// 校验任务的紧迫程度
 	public int urgentLevel(double p) {
-		double temp = Math.log(c) * p;
+		double temp = Math.log(c) * p*p;
 		return (int)Math.floor(t/temp);
 	}
 	

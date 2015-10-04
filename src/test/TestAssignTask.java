@@ -1,9 +1,10 @@
-package AssignTasks;
+package test;
 
 import java.util.List;
 import java.util.Map;
+import assignTask.AssignTask;
 
-public class Test {
+public class TestAssignTask {
 	public static void print(String s) {
 		System.out.print(s);
 	}
@@ -20,14 +21,16 @@ public class Test {
 		return sum;
 	}
 
+
 	public static void main(String[] args) {
+		int[] T={};
 		AssignTask t = new AssignTask();
 		AssignTask e = new AssignTask();
 		AssignTask ta = new AssignTask();
 		t.init();
 		e.init();
 		ta.init();
-
+		// ---------------------------------------------
 		print("# TIME" + "\n");// 校验能力的比较，表现在给定任务下的校验完成时间范围
 		Map<String, String> tSAVT = t.timeCost(AssignTask.SAVT);
 		print(tSAVT.get(AssignTask.MIN_TIME) + "\t");
@@ -51,23 +54,29 @@ public class Test {
 		Map<String, String> eRRAVT = e.energyCost(AssignTask.RRAVT, false);
 		print(eRRAVT.get(AssignTask.VER_ENERGY) + "\t" + eRRAVT.get(AssignTask.SERVER_ENERGY) + "\n");
 
-		Map<String, String> eEEAVT = e.energyCost(AssignTask.EEAVT, false);
+		Map<String, String> eEEAVT = e.energyCost(AssignTask.EEAVT, true);
 		print(eEEAVT.get(AssignTask.VER_ENERGY) + "\t" + eEEAVT.get(AssignTask.SERVER_ENERGY) + "\n");
 		print("\n");
 
 		// ----------------------------------------------
 		print("# TASKS" + "\n");
 		List<Integer> taSAVT = ta.taskAssign(AssignTask.SAVT);
-		print(taSAVT + "=" + sum(taSAVT));
-		print("\n");
+		print(taSAVT + "=" + sum(taSAVT) + "\n");
 
 		List<Integer> taRRAVT = ta.taskAssign(AssignTask.RRAVT);
-		print(taRRAVT + "=" + sum(taRRAVT));
-		print("\n");
+		print(taRRAVT + "=" + sum(taRRAVT) + "\n");
 
 		List<Integer> taEEAVT = ta.taskAssign(AssignTask.EEAVT);
-		print(taEEAVT + "=" + sum(taEEAVT));
-		print("\n");
+		print(taEEAVT + "=" + sum(taEEAVT) + "\n");
+
+		// -------------------------------------------------------
+		print("# UL and RT" + "\n");
+		List<Integer> ULs = ta.taskUergentLevel();
+		print(ULs);
+
+		List<Integer> RTs = ta.serverResponseTime();
+		print(RTs);
+
 	}
 
 }

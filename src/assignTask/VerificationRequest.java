@@ -1,4 +1,4 @@
-package AssignTasks;
+package assignTask;
 
 //用户的校验需求
 public class VerificationRequest {

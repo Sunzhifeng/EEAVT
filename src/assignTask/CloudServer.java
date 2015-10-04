@@ -1,6 +1,7 @@
-package AssignTasks;
+package assignTask;
 
 import tool.DataFilter;
+import tool.Sampling;
 
 //云服务器
 public class CloudServer {
@@ -43,10 +44,14 @@ public class CloudServer {
 		// t*k*(f^a)
 		return Tcsp * k * Math.pow(f, a);
 	}
-	
-	//服务器的相应等级————对指定用户的校验需求而言
-	public int responseLevel(VerificationRequest VR){
-		return (int)Math.ceil(proofTime(VR.blocks())/(Math.log(VR.n)*VR.P));
-	}
 
+	// 服务器的相应等级————对指定用户的校验需求而言
+	/*
+	 * public int responseLevel(VerificationRequest VR){ return
+	 * (int)Math.ceil(proofTime(VR.blocks())/(Math.log(VR.n)*VR.P)); }
+	 */
+	public double responseLevel(VerificationRequest VR) {
+		int blocks=Sampling.getSampleBlocks(VR.n,BaseParams.e, VR.P);
+		return (proofTime(VR.blocks()) / Math.log(blocks));
+	}
 }

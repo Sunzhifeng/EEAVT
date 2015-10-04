@@ -72,7 +72,7 @@ public class Sampling {
 		 
 	 }
 	 public static void main(String[] args){
-		 int c=getSampleBlocks(10000, 100,1);
+		 int c=getSampleBlocks(1000, 1,0.99);
 		 System.out.println(c);
 		 
 		 int cs=getSampleBlocks(10000,0.999,200,100);

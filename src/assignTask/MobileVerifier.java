@@ -1,4 +1,4 @@
-package AssignTasks;
+package assignTask;
 
 import tool.DataFilter;
 
@@ -11,7 +11,7 @@ public class MobileVerifier {
 	public int w; // 可提供校验服务时间（存活时间）
 	public VerificationTask VT=new VerificationTask(0,0);// 分给校验者的校验任务
 
-	// public double st; // 校验者已提供的校验服务时间
+	//public int  remainBlocks; 
 	// public int c=0; // 分给校验者的校验任务（块数）
 
 	// min constructor
@@ -81,7 +81,9 @@ public class MobileVerifier {
 		return PsRF * t + PdRF * TdRF;
 	}
 
-	public double dComputeEnergy(double t) {
-		return (PsCPU + PdCPU) * t;
+	// t is the response time
+	public double dComputeEnergy(double rt) {
+		
+		return (PsCPU + PsRF) * rt;
 	}
 }
