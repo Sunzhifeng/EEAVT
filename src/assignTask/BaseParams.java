@@ -6,14 +6,14 @@ public class BaseParams {
 	public static final int S = 10;// 校验组大小，即校验者个数
 	public static final int L = 5; // 云服务器个数
 	public static final int B = 200;// 移动网络带宽KB
-	public static final int n = 10000; // 待检查数据块数
+	public static int n = 10000; // 待检查数据块数
 	public static final double pe=0.001;//坏块率为0.1%
 	public static final int e = (int)(pe* n);
 	public static final int M = 1; // 文件大小，G
-	public static final double pr = 0.99; // 探测率
+	public static  double pr = 0.95; // 探测率
 	public static final int bs = (int) (M / n) * 1000;// 数据块大小 ,K
-	public static final int SECUBIT = 50; // 校验算法的安全强度20B=160bit
-	public static final int T =9; // 用户期望完成时间,单位s
+	public static final int SECUBIT = 20; // 校验算法的安全强度20B=160bit
+	public static  int T =62; // 用户期望完成时间,单位s
 
 	// 校验者基准功率下验证证据的计算时间函数tver(x)=ax+b
 	public static double Ps0CPU = 2.5;
@@ -40,7 +40,7 @@ public class BaseParams {
 	public static double[] PdRFi = { 1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45 };
 	public static double[] prs = { 0.95, 0.99, 1.00 };
 	public static double[] fj = { 2.4, 2.6, 2.8, 3.0, 3.2 };
-	public static int[] wi = { 100, 100, 100, 100, 100, 100, 100,100, 100, 100};
+	public static int[] wi = { 500, 500, 500, 500, 500, 500, 500,500, 500, 500};
 
 	/**
 	 * 校验者基准功率验证证据的计算时间

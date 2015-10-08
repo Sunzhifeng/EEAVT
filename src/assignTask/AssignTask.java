@@ -362,7 +362,7 @@ public class AssignTask {
 
 	// 考虑校验组的校验能力，考虑存活时间w，看其校验完成时间的范围，这样可以指导用户T的范围。
 	public double minTimeCost2() {
-		int c = Sampling.getSampleBlocks(VR.n, e, VR.P);
+	//	int c = Sampling.getSampleBlocks(VR.n, e, VR.P);
 		for(int i=0;i<S;i++){
 	
 		}
